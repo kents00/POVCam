@@ -10,6 +10,10 @@
 
 Adding a camera and adjusting it to your needs can be time-consuming, which is the reason I created this addon to make it easier to add a camera. It allows the user to add a new camera object to the scene, make it the active camera, and adjust its position and orientation to match the current point of view in the active 3D viewport.
 
+
+https://user-images.githubusercontent.com/69900896/221156617-0ef188bf-1f77-4063-90a0-0e5130e41c2c.mp4
+
+
 ## Installation
 
 To install this add-on in Blender, follow these steps:
