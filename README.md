@@ -4,6 +4,8 @@
 
 "Adds a camera based on the current point of view”
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Q5Q8BW198)
+
 ## Introduction
 
 Adding a camera and adjusting it to your needs can be time-consuming, which is the reason I created this addon to make it easier to add a camera. It allows the user to add a new camera object to the scene, make it the active camera, and adjust its position and orientation to match the current point of view in the active 3D viewport.
