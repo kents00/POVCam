@@ -55,6 +55,9 @@ class POVCam_pl_Camera(Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
+        col.enabled = True
+        col.scale_x = 2.0
+        col.scale_y = 2.0
         col.operator("object.append_camera", icon="OUTLINER_OB_CAMERA")
         col.label(text="SUPPORT ME ON:")
         op = self.layout.operator(
