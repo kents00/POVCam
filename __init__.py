@@ -1,14 +1,14 @@
 bl_info = {
-    "name" : "POVCam",
-    "blender" : (3,4,1),
-    "version" : (2,24,23),
-    "category" : "3D View",
-    "author" : "Kent Edoloverio",
-    "location" : "3D View > POVCam",
-    "description" : "Adds a camera based on the current point of view",
-    "warning" : "",
-    "wiki_url" : "",
-    "tracker_url" : "",
+    "name": "POVCam",
+    "blender": (4, 1, 1),
+    "version": (2, 24, 23),
+    "category": "3D View",
+    "author": "Kent Edoloverio",
+    "location": "3D View > POVCam",
+    "description": "Adds a camera based on the current point of view",
+    "warning": "",
+    "wiki_url": "",
+    "tracker_url": "",
 }
 
 import bpy
@@ -29,9 +29,21 @@ class POVCamera:
             if area.type == 'VIEW_3D':
                 for region in area.regions:
                     if region.type == 'WINDOW':
-                        override = {'area': area, 'region': region, 'edit_object': self.camera_object}
-                        bpy.ops.view3d.camera_to_view(override)
-        return {'FINISHED'}
+                        for space in area.spaces:
+                            if space.type == 'VIEW_3D':
+                                override = {
+                                    'area': area,
+                                    'region': region,
+                                    'space_data': space,
+                                    'region_data': space.region_3d,
+                                    'edit_object': self.camera_object,
+                                    'object': self.camera_object,
+                                    'active_object': self.camera_object,
+                                    'selected_objects': [self.camera_object],
+                                    'selected_editable_objects': [self.camera_object],
+                                }
+                                bpy.ops.view3d.camera_to_view(override)
+                                return {'FINISHED'}
 
 
 class POVCam_op_Add_camera(Operator):
@@ -64,7 +76,7 @@ class POVCam_pl_Camera(Panel):
             'wm.url_open',
             text='KO-FI',
             icon='URL'
-            )
+        )
         op.url = 'https://ko-fi.com/kents_workof_art'
 
 
