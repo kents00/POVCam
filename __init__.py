@@ -1,7 +1,7 @@
 bl_info = {
     "name": "POVCam",
-    "blender": (4, 1, 1),
-    "version": (2, 24, 23),
+    "blender": (3, 0, 0),
+    "version": (2, 25, 0),
     "category": "3D View",
     "author": "Kent Edoloverio",
     "location": "3D View > POVCam",
@@ -19,42 +19,60 @@ class POVCamera:
     def __init__(self):
         self.camera_data = bpy.data.cameras.new(name="Camera")
         self.camera_object = bpy.data.objects.new(name="Camera", object_data=self.camera_data)
-        bpy.context.scene.collection.objects.link(self.camera_object)
+        collection = getattr(bpy.context, "collection", None) or bpy.context.scene.collection
+        collection.objects.link(self.camera_object)
 
     def set_active_camera(self):
         bpy.context.scene.camera = self.camera_object
+        if getattr(bpy.context, "view_layer", None):
+            for obj in bpy.context.selected_objects:
+                obj.select_set(False)
+            bpy.context.view_layer.objects.active = self.camera_object
+            self.camera_object.select_set(True)
 
     def set_camera_to_point_of_view(self):
-        for area in bpy.context.screen.areas:
-            if area.type == 'VIEW_3D':
-                for region in area.regions:
-                    if region.type == 'WINDOW':
-                        for space in area.spaces:
-                            if space.type == 'VIEW_3D':
-                                override = {
-                                    'area': area,
-                                    'region': region,
-                                    'space_data': space,
-                                    'region_data': space.region_3d,
-                                    'edit_object': self.camera_object,
-                                    'object': self.camera_object,
-                                    'active_object': self.camera_object,
-                                    'selected_objects': [self.camera_object],
-                                    'selected_editable_objects': [self.camera_object],
-                                }
+        areas = []
+        if getattr(bpy.context, "area", None) and bpy.context.area.type == 'VIEW_3D':
+            areas = [bpy.context.area]
+        elif getattr(bpy.context, "screen", None):
+            areas = [area for area in bpy.context.screen.areas if area.type == 'VIEW_3D']
+
+        for area in areas:
+            for region in area.regions:
+                if region.type == 'WINDOW':
+                    for space in area.spaces:
+                        if space.type == 'VIEW_3D':
+                            override = {
+                                'area': area,
+                                'region': region,
+                                'space_data': space,
+                                'region_data': space.region_3d,
+                                'edit_object': self.camera_object,
+                                'object': self.camera_object,
+                                'active_object': self.camera_object,
+                                'selected_objects': [self.camera_object],
+                                'selected_editable_objects': [self.camera_object],
+                            }
+                            if hasattr(bpy.context, "temp_override"):
+                                with bpy.context.temp_override(**override):
+                                    bpy.ops.view3d.camera_to_view()
+                            else:
                                 bpy.ops.view3d.camera_to_view(override)
-                                return {'FINISHED'}
+                            return {'FINISHED'}
+        return {'CANCELLED'}
 
 
 class POVCam_op_Add_camera(Operator):
     bl_idname = "object.append_camera"
     bl_label = "ADD CAMERA"
+    bl_description = "Add a new camera matching the current 3D viewport perspective"
+    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         camera_manager = POVCamera()
         camera_manager.set_active_camera()
-        camera_manager.set_camera_to_point_of_view()
-        return {'FINISHED'}
+        result = camera_manager.set_camera_to_point_of_view()
+        return result or {'FINISHED'}
 
 
 class POVCam_pl_Camera(Panel):
@@ -92,7 +110,7 @@ def register():
 
 
 def unregister():
-    for cls in classes:
+    for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
 

@@ -1,0 +1,19 @@
+schema_version = "1.0.0"
+id = "povcam"
+version = "2.25.0"
+name = "POVCam"
+tagline = "Adds a camera based on the current point of view"
+maintainer = "Kent Edoloverio"
+type = "add-on"
+
+# Supported Blender versions (3.0 up to 5.x)
+blender_version_min = "3.0.0"
+blender_version_max = "5.1.0"
+
+# License
+license = [
+  "SPDX:MIT",
+]
+
+# Optional tags
+tags = ["3D View", "Camera"]

@@ -10,6 +10,11 @@
 
 Adding a camera and adjusting it to your needs can be time-consuming, which is the reason I created this addon to make it easier to add a camera. It allows the user to add a new camera object to the scene, make it the active camera, and adjust its position and orientation to match the current point of view in the active 3D viewport.
 
+## Compatibility
+
+POVCam supports **Blender 3.0 up to Blender 5.x**:
+- **Blender 3.0 to 4.1**: Compatible as a traditional add-on via `bl_info` in `__init__.py`.
+- **Blender 4.2 to 5.x**: Compatible with Blender's updated operator override API (`bpy.context.temp_override`) and the Extensions manifest format (`blender_manifest.toml`).
 
 https://user-images.githubusercontent.com/69900896/221156617-0ef188bf-1f77-4063-90a0-0e5130e41c2c.mp4
 
